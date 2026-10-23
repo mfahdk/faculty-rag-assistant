@@ -3,7 +3,6 @@
 A faculty-record management platform centered on a **retrieval-augmented generation (RAG) assistant**. It combines uploaded-document context with structured activity records to answer questions and generate academic report drafts using Ollama-hosted language models.
 ​
 ## Contents
-​
 - [Overview](#overview)
 - [Core features](#core-features)
 - [System demo](#system-demo)
@@ -19,7 +18,6 @@ Faculty activity data and supporting evidence often live in separate places. Thi
 The assistant uses two complementary sources: **structured records** fetched from MySQL through the application API, and **document passages** retrieved from per-user FAISS indexes. These sources are assembled into the model's prompt alongside recent conversation history. The approach supplies context at inference time rather than fine-tuning a model on faculty data.
 ​
 ## Core features
-​
 - **Document-based questions:** retrieve relevant passages from uploaded files and use them as context for answers.
 - **Faculty-record queries:** combine teaching, research, publication, and service summaries with record counts.
 - **Report drafts:** use a dedicated Mistral model for report requests, with frontend DOCX/PDF export and report history.
@@ -35,7 +33,7 @@ The assistant uses two complementary sources: **structured records** fetched fro
 ​
 ## System architecture
 ​
-![High-level system design showing the web portal, AI platform, documents, and database](https://example.com/images/system-overview.png)
+![High-level system design showing the web portal, AI platform, documents, and database](https://github.com/mfahdk/faculty-rag-assistant/blob/main/devl1.png)
 ​
 *Conceptual system overview. The diagram's Llama 3.1 label predates the current Llama 3.2 3B setting; the SSO flow remains a design reference rather than a verified integration.*
 ​
@@ -54,17 +52,16 @@ Web interface: PHP / JavaScript
             |-- Ollama language model --> answer / report draft
 ```
 ​
-| Component | Technologies |
-| --- | --- |
-| AI API | Python, FastAPI, HTTPX |
-| Generation and embeddings | Ollama, LangChain Ollama |
-| Vector retrieval | FAISS, NumPy |
-| Document extraction | PyMuPDF, Mammoth, python-pptx |
-| Application and storage | Node.js, Express, MySQL, Multer |
-| Interface | PHP, JavaScript |
+| Component       | Technologies                     |
+| :-------------- | :------------------------------- |
+| AI API          | Python, FastAPI, HTTPX           |
+| LLM inference   | Ollama, LangChain Ollama         |
+| Vector search   | FAISS, NumPy                     |
+| Text extraction | PyMuPDF, Mammoth, python-pptx    |
+| Backend         | Node.js, Express, MySQL, Multer  |
+| Frontend        | PHP, JavaScript                  |
 ​
 ## RAG pipeline
-​
 ### 1. Load the user's documents
 ​
 For requests with a valid session token, the AI service derives the user ID from the token and fetches that user's uploads through the backend's shared-secret-protected internal API. Documents are loaded when the user's index is not already cached.
@@ -139,7 +136,6 @@ return {"answer": clean_result, "web_results": 0}
 The frontend displays answers or converts report Markdown into downloadable documents. Report mode reuses the ordinary question-answering prompt rather than a separate report template.
 ​
 ### Retrieval boundaries
-​
 - **Cache freshness:** indexes are not persisted or automatically refreshed after uploads or deletions; cached content can become stale until rebuilt or the process restarts.
 - **Extraction:** scanned PDFs and images require OCR, which is not implemented here.
 - **OneDrive:** the backend separately stores OneDrive chunks and MiniLM embeddings in MySQL. The AI service does not read that store, so those files are not automatically part of this RAG pipeline.
@@ -147,11 +143,18 @@ The frontend displays answers or converts report Markdown into downloadable docu
 ​
 ## Models and generation
 ​
-| Role | Model selection | Generation settings |
-| --- | --- | --- |
-| Chat and activity extraction | `llama3.2:3b` through Ollama | Temperature `0.1`; context window `8192` |
-| Document embeddings | `mxbai-embed-large` through Ollama | Used for both chunks and questions |
-| Report generation | `mistral:7b-instruct-q4_K_M` | Temperature `0.0`; context window `4096`; output limit `1024` tokens |
+| Role              | Ollama model                 |
+| :---------------- | :--------------------------- |
+| Chat / extraction | `llama3.2:3b`                |
+| Embeddings        | `mxbai-embed-large`          |
+| Reports           | `mistral:7b-instruct-q4_K_M` |​
+
+
+**Generation settings**
+​
+- **Chat:** temperature `0.1`; context window `8192` tokens.
+- **Reports:** temperature `0.0`; context window `4096` tokens; output limit `1024` tokens.
+- **Embeddings:** the same model embeds both document chunks and questions.
 ​
 The supplied environment settings select **Llama 3.2 3B** for chat and activity extraction and **mxbai-embed-large** for document and query embeddings. The report model is selected separately in the Python code. These settings identify the configured models, not a verified running deployment.
 ​
@@ -161,9 +164,10 @@ The supplied environment settings select **Llama 3.2 3B** for chat and activity 
 ​
 ## Supporting application
 ​
-![Backend subsystem architecture showing the API, activity modules, integrations, database, and file storage](https://example.com/images/backend-subsystems.png)
+![Backend subsystem architecture showing the API, activity modules, integrations, database, and file storage](https://github.com/mfahdk/faculty-rag-assistant/blob/main/subsystem_backend.png)
 ​
 *Supporting backend design. Encryption applies only to `General` uploads; the identity-provider connection shown requires a verified trust boundary.*
+
 ​
 The web portal handles chat, activity management, uploads, and report export. The Express API provides MySQL-backed records, a 25 MB upload limit, user-facing file ownership checks, and internal endpoints used by the AI service. Supporting integrations include Semantic Scholar publication import and separate OneDrive ingestion.
 ​
