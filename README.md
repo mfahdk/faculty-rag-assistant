@@ -35,6 +35,7 @@ The assistant uses two complementary sources: **structured records** fetched fro
 ​
 ![High-level system design showing the web portal, AI platform, documents, and database](https://github.com/mfahdk/faculty-rag-assistant/blob/main/devl1.png)
 ​
+
 *Conceptual system overview. The diagram's Llama 3.1 label predates the current Llama 3.2 3B setting; the SSO flow remains a design reference rather than a verified integration.*
 ​
 ```text
