@@ -143,7 +143,6 @@ The frontend displays answers or converts report Markdown into downloadable docu
 - **Answer quality:** retrieved passages may be irrelevant, and long context or the report output limit can omit information. Answers and reports need review.
 ​
 ## Models and generation
-​
 | Role              | Ollama model                 |
 | :---------------- | :--------------------------- |
 | Chat / extraction | `llama3.2:3b`                |
@@ -156,6 +155,7 @@ The frontend displays answers or converts report Markdown into downloadable docu
 - **Chat:** temperature `0.1`; context window `8192` tokens.
 - **Reports:** temperature `0.0`; context window `4096` tokens; output limit `1024` tokens.
 - **Embeddings:** the same model embeds both document chunks and questions.
+
 ​
 The supplied environment settings select **Llama 3.2 3B** for chat and activity extraction and **mxbai-embed-large** for document and query embeddings. The report model is selected separately in the Python code. These settings identify the configured models, not a verified running deployment.
 ​
