@@ -27,10 +27,14 @@ The assistant uses two complementary sources: **structured records** fetched fro
 ​
 ## System demo
 ​
-[Watch the system demo](https://example.com/faculty-system-demo)
-​
-*Replace this placeholder with the demo video URL.*
-​
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=VBz6SfggEC0">
+    <img src="https://img.youtube.com/vi/VBz6SfggEC0/maxresdefault.jpg"
+         alt="System Demo"
+         width="800">
+  </a>
+</div>
+
 ## System architecture
 ​
 ![High-level system design showing the web portal, AI platform, documents, and database](https://github.com/mfahdk/faculty-rag-assistant/blob/main/devl1.png)
